@@ -12,6 +12,8 @@
 import { mapActions, mapState } from 'pinia';
 import HelloWorld from './components/HelloWorld.vue'
 import { useCounterStore } from './store';
+import { collection, getDocs } from "firebase/firestore";
+import { db } from '@/firebaseConfig.js';
 
 export default {
   name: 'App',
@@ -23,6 +25,17 @@ export default {
   },
   methods : {
     ...mapActions(useCounterStore, ['increment'])
+  },
+  created(){
+    getDocs(collection(db, "tasks")).then(querySnapshot=>{
+      querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+      });
+      }).catch(err=>{
+        console.log(err)
+      })
+    
   }
 }
 </script>
