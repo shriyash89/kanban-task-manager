@@ -5,56 +5,50 @@
       color="primary"
       dark
     >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      <AppNavbar />
     </v-app-bar>
 
     <v-main>
-      <HelloWorld/>
+      <p>count is {{ count }}</p>
+      <p>double is {{ double }}</p>
+      <v-btn @click="increment()">inc</v-btn>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import { mapActions, mapState } from 'pinia';
+import AppNavbar from './components/AppNavbar.vue';
+import { useCounterStore } from './store';
+import { db } from './firebaseConfig';
+import { collection, getDocs } from "firebase/firestore";
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    AppNavbar,
   },
 
   data: () => ({
-    //
+    
   }),
+  computed : {
+    ...mapState(useCounterStore, ['count','double'])
+  },
+  methods : {
+    ...mapActions(useCounterStore, ['increment'])
+  },
+  created(){
+    getDocs(collection(db,'tasks'))
+      .then(snapshot=>{
+        snapshot.forEach(doc => {
+            console.log("docId-> "+doc.id, doc.data())
+        });
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+  },
 };
 </script>
