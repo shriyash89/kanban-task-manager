@@ -14,19 +14,16 @@
             <small>Select Client</small>
             <v-chip-group>
               <v-chip
-                small
-                color="green"
                 outlined
+                @click="client='client1'"
               >Client1</v-chip>
               <v-chip
-                small
-                color="green"
                 outlined
+                @click="client='client2'"
               >Client2</v-chip>
               <v-chip
-                small
-                color="green"
                 outlined
+                @click="client='client3'"
               >Client3</v-chip>
             </v-chip-group>
           </div>
@@ -34,42 +31,36 @@
           <small >Select Milestone</small>
           <v-chip-group>
             <v-chip
-              small
               outlined
-              color="green"
+              @click="mildstone='MVP'"
             >MVP</v-chip>
             <v-chip
-              small
-              color="green"
               outlined
+              @click="mildstone='SEO Management'"
             >SEO Management</v-chip>
             <v-chip
-              small
-              color="green"
               outlined
+              @click="mildstone='19 Aug'"
             >19 Aug</v-chip>
           </v-chip-group>
           <div style="padding-top: 10px;"></div>
           <small>Select Dev</small>
           <v-chip-group>
             <v-chip
-              small
-              color="green"
               outlined
+              @click="dev='JS'"
             >JS</v-chip>
             <v-chip
-              small
-              color="green"
               outlined
+              @click="dev='BB'"
             >BB</v-chip>
             <v-chip
-              small
-              color="green"
               outlined
+              @click="dev='Bm'"
             >BM</v-chip>
             <v-chip
-              color="green"
               outlined
+              @click="dev='RS'"
             >RS</v-chip>
           </v-chip-group>
           <div style="display: flex;">
@@ -77,6 +68,7 @@
               <v-icon>mdi-clock-time-four</v-icon>
             </v-btn>
             <v-text-field
+              v-model="title"
               label="Task Name"
             ></v-text-field>
           </div>
@@ -85,6 +77,7 @@
               <v-icon>mdi-message</v-icon>
             </v-btn>
             <v-text-field
+              v-model="desc"
               label="Description"
             ></v-text-field>
           </div>
@@ -102,6 +95,7 @@
               outlined
               small
               style="margin-right: 10px;"
+              @click="handleSubmit"
             >Add Task</v-btn>
           </div>
         </v-card>
@@ -110,14 +104,50 @@
 </template>
 
 <script>
+import { db } from '@/firebaseConfig';
+import { useTaskStore } from '@/store/taskStore';
+import { addDoc, collection } from 'firebase/firestore';
+import { mapActions } from 'pinia';
+
 export default {
     data() {
-        return {
-        
-        };
+      return {
+        title : '',
+        desc : '',
+        client : '',
+        mildstone : '',
+        dev : '',
+      };
     },
     methods: {
+      ...mapActions(useTaskStore, ['addNewTask']),
+      handleSubmit(){
+        this.title = this.title.trim()
+        this.desc = this.desc.trim()
+        if(!this.title || !this.desc || !this.client || !this.mildstone || !this.dev){
+          alert('add all details!')
+          return null
+        }
+        const newTask = {
+          title : this.title,
+          desc : this.desc,
+          status : 'pending',
+          client : this.client,
+          mildstone : this.mildstone,
+          dev : this.dev,
+          subTasks : []
+        }
         
+        //add to firebase
+        addDoc(collection(db,'tasks'), newTask)
+          .then(docRef=>{
+              this.addNewTask({id:docRef.id,...newTask})
+              this.$emit('invertShow')
+          })
+          .catch(err=>{
+              console.log(err)
+          })
+      }
     }
 };
 </script>

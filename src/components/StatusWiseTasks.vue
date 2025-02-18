@@ -9,8 +9,13 @@
             outlined
             tile
           >
-            Pending(12)
-            <TaskItem />
+            Pending <small>({{ pendingTasks.length }})</small>
+            <v-list>
+              <v-list-item v-for="task in pendingTasks" :key="task.id" class="pl-0 pb-3">
+                  <TaskItem v-bind:id="task.id" />
+              </v-list-item>
+            </v-list>
+            
           </v-card>
         </v-col>
         <v-col
@@ -21,7 +26,12 @@
             outlined
             tile
           >
-            In progress(10)
+            In progress <small>({{ inProcessTasks.length }})</small>
+            <v-list>
+              <v-list-item v-for="task in inProcessTasks" :key="task.id" class="pl-0 pb-3">
+                  <TaskItem v-bind:id="task.id" />
+              </v-list-item>
+            </v-list>
           </v-card>
         </v-col>
         <v-col
@@ -32,7 +42,12 @@
             outlined
             tile
           >
-            done
+            done <small>({{ doneTasks.length }})</small>
+            <v-list>
+              <v-list-item v-for="task in doneTasks" :key="task.id" class="pl-0 pb-3">
+                  <TaskItem v-bind:id="task.id" />
+              </v-list-item>
+            </v-list>
           </v-card>
         </v-col>
       </v-row>
@@ -40,7 +55,9 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'pinia';
 import TaskItem from './TaskItem.vue';
+import { useTaskStore } from '@/store/taskStore';
 
 export default {
     components : {
@@ -51,8 +68,14 @@ export default {
         
         };
     },
+    computed :{
+      ...mapState(useTaskStore, ['pendingTasks','inProcessTasks','doneTasks'])
+    },
     methods: {
-        
+        ...mapActions(useTaskStore, ['fetchTasks'])
+    },
+    created(){
+        this.fetchTasks()
     }
 };
 </script>

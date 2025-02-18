@@ -15,8 +15,8 @@
 import { mapActions, mapState } from 'pinia';
 import AppNavbar from './components/AppNavbar.vue';
 import { useCounterStore } from './store';
-import { db } from './firebaseConfig';
-import { collection, getDocs } from "firebase/firestore";
+// import { db } from './firebaseConfig';
+// import { collection, getDocs } from "firebase/firestore";
 import StatusWiseTasks from './components/StatusWiseTasks.vue';
 
 export default {
@@ -37,15 +37,15 @@ export default {
     ...mapActions(useCounterStore, ['increment'])
   },
   created(){
-    getDocs(collection(db,'tasks'))
-      .then(snapshot=>{
-        snapshot.forEach(doc => {
-            console.log("docId-> "+doc.id, doc.data())
-        });
-      })
-      .catch(err=>{
-        console.log(err)
-      })
+    // getDocs(collection(db,'tasks'))
+    //   .then(snapshot=>{
+    //     snapshot.forEach(doc => {
+    //         console.log("docId-> "+doc.id, doc.data())
+    //     });
+    //   })
+    //   .catch(err=>{
+    //     console.log(err)
+    //   })
   },
 };
 </script>
