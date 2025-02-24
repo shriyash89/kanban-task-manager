@@ -1,16 +1,16 @@
 <template>
     <div>
-        <v-tabs color="primary" class="primary">
-            <v-tab @click="showInfo=false">
+        <v-tabs centered color="primary" class="primary">
+            <v-tab @click="showInfo=false" style="width: 100%;">
                 Sub Tasks
             </v-tab>
-            <v-tab @click="showInfo=true">
+            <v-tab @click="showInfo=true" style="width: 100%;">
                 INFO
             </v-tab>  
         </v-tabs>
 
         <div v-show="!showInfo">
-            <v-container style="padding: 0;margin-top: 5px;" v-show="!showUpdate">
+            <v-container style="padding: 0;margin-top: 15px;" v-show="!showUpdate">
                 <div class="mt-2">
                     <v-btn icon>
                         <v-icon color="darken-1" @click="handleNewSubtask">mdi-plus</v-icon>
@@ -40,13 +40,6 @@
                             <span v-if="!t.done">{{ t.subT }}</span>
                         </v-list-item>
                     </v-list>
-                    <!-- <v-radio-group style="margin: 0;">
-                        <v-radio
-                            label='task'
-                            color="red"
-                            value="red"
-                        ></v-radio>
-                    </v-radio-group> -->
                 </div>
             </v-container>
 
@@ -69,7 +62,7 @@
                             <v-icon color="red">mdi-delete</v-icon>
                         </v-btn>
                         <v-spacer></v-spacer>
-                        <v-btn icon @click="showUpdate=false" style="margin-top: 12px;margin-left: 5px;">
+                        <v-btn icon @click="handleCross();showUpdate=false" style="margin-top: 12px;margin-left: 5px;">
                             <v-icon color="grey light-2">mdi-close-circle-outline</v-icon>
                         </v-btn>
                     </div>
@@ -79,7 +72,7 @@
                         v-for="(t,index) in subTask" 
                         :key="index" 
                         @click="handleCheck(index)"
-                        class="pl-0">
+                        class="pl-0 h-50">
                         <v-checkbox
                             v-model=t.check
                             color="purple"
@@ -90,7 +83,7 @@
             </v-container>
         </div>
 
-        <v-container v-show="showInfo">
+        <v-container v-show="showInfo" class="pb-0 mb-0">
            {{ info }}
         </v-container>
     </div>
@@ -143,9 +136,9 @@ export default {
     },
     handleDone(){
         for (const t of this.subTask) {
-            if(t.check===true)
+            if(t.check===true){
                 t.done = true
-            else
+            } else
                 t.done = false
         }
         this.updateSubTasks(this.id, this.subTask)
@@ -159,6 +152,11 @@ export default {
     hanldeAllCheck(){
         this.subTask.forEach(t => {
             t.check = this.allCheck
+        })
+    },
+    handleCross(){
+        this.subTask.forEach(t => {
+            t.check = false
         })
     }
   }

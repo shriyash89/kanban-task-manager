@@ -1,17 +1,19 @@
 <template>
-    <v-container fluid class="grey lighten-5">
+    <v-container fluid class="pa-0">
       <v-row no-gutters>
         <v-col
           cols="12"
           sm="4"
+          style="height: 100vh;border-right: 2px solid #E8E8E8;"
+          class="pa-3"
         >
           <v-card
-            outlined
-            tile
+            elevation="0"
+            color="transparent"
           >
-            Pending <small>({{ pendingTasks.length }})</small>
-            <v-list>
-              <v-list-item v-for="task in pendingTasks" :key="task.id" class="pl-0 pb-3">
+            <b>Pending</b> <small class="grey--text">({{ pendingTasks.length }})</small>
+            <v-list color="transparent">
+              <v-list-item v-for="task in pendingTasks" :key="task.id" class="pa-0 pb-3">
                   <TaskItem v-bind:id="task.id" />
               </v-list-item>
             </v-list>
@@ -21,13 +23,15 @@
         <v-col
           cols="12"
           sm="4"
+          style="border-right: 2px solid #E8E8E8;"
+          class="pa-3"
         >
           <v-card
-            outlined
-            tile
+            elevation="0"
+            color="transparent"
           >
-            In progress <small>({{ inProcessTasks.length }})</small>
-            <v-list>
+            <b>In Progress</b> <small class="grey--text">({{ inProcessTasks.length }})</small>
+            <v-list color="transparent">
               <v-list-item v-for="task in inProcessTasks" :key="task.id" class="pl-0 pb-3">
                   <TaskItem v-bind:id="task.id" />
               </v-list-item>
@@ -37,13 +41,14 @@
         <v-col
           cols="12"
           sm="4"
+          class="pa-3"
         >
           <v-card
-            outlined
-            tile
+            elevation="0"
+            color="transparent"
           >
-            done <small>({{ doneTasks.length }})</small>
-            <v-list>
+            <b>Done</b> <small class="grey--text">({{ doneTasks.length }})</small>
+            <v-list color="transparent">
               <v-list-item v-for="task in doneTasks" :key="task.id" class="pl-0 pb-3">
                   <TaskItem v-bind:id="task.id" />
               </v-list-item>

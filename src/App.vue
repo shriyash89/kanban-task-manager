@@ -1,13 +1,7 @@
 <template>
-  <v-app>
+  <v-app style="background-color: #F8F8F8;">
     <AppNavbar />
-
-    <div class="mt-5">
-      <!-- <p>count is {{ count }}</p>
-      <p>double is {{ double }}</p>
-      <v-btn @click="increment()">inc</v-btn> -->
-      <StatusWiseTasks />
-    </div>
+    <StatusWiseTasks />
   </v-app>
 </template>
 
@@ -15,8 +9,6 @@
 import { mapActions, mapState } from 'pinia';
 import AppNavbar from './components/AppNavbar.vue';
 import { useCounterStore } from './store';
-// import { db } from './firebaseConfig';
-// import { collection, getDocs } from "firebase/firestore";
 import StatusWiseTasks from './components/StatusWiseTasks.vue';
 
 export default {

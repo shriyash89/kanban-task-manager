@@ -31,16 +31,29 @@ export const useTaskStore = defineStore('tasks' ,{
         addNewTask(newTask){
             this.tasks.push(newTask)
         },
-        task(id){
+        getTask(id){
             let arr = this.tasks.filter(t=>t.id===id)
             return arr[0]
         },
-        async changeStatusInStore(id,status){
-            for(let t of this.tasks){
+        async changeStatusInStore(id,status,till){
+
+            for(let t of this.tasks) {
                 if(t.id===id){
                     const docToUpdate = doc(db, 'tasks', id)
-                    await updateDoc(docToUpdate,{"status":status})
-                    t.status = status
+                    if(status==='process'){
+                        const d = new Date()
+                        t.startAt = d
+                        t.status = status
+                        await updateDoc(docToUpdate, {"status":status,"startAt":d})
+                    }
+                    else if(status==='done') {
+                        t.till = till
+                        t.status = status
+                        t.startAt = ''
+                        await updateDoc(docToUpdate, {"status":status,"till":till,"startAt":''})
+                    }
+                    // console.log(this.tasks)
+                    break
                 }
             }
         },
