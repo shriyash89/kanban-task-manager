@@ -5,10 +5,6 @@
         <v-expansion-panel-header class="pa-3">
             <span>{{ t.title }}</span>
         </v-expansion-panel-header>
-
-        <div class="pl-2">
-            <p>duration : <b>{{ hours }} :: {{ minutes }} :: {{ seconds }}</b></p>
-        </div>
      
         <div class="flex-items">
             <div>
@@ -22,9 +18,12 @@
                     {{ t.client }}
                 </v-chip>
                 <span icon>
-                    <v-icon right>mdi-checkbox-marked-outline</v-icon>
+                    <v-icon small right>mdi-checkbox-marked-outline</v-icon>
                     <span>{{completedSubtasks}}/{{ getlength }}</span>
                 </span>
+            </div>
+            <div class="mt-3">
+                <b>{{ leftPadding(hours) }} : {{ leftPadding(minutes) }} : {{ leftPadding(seconds) }}</b>
             </div>
             <div>
                 <v-btn icon @click="changeStatus">
@@ -50,7 +49,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-  </template>
+</template>
 
 <script>
 import { mapActions, mapState } from 'pinia';
@@ -61,6 +60,9 @@ export default {
     props : {
         id : {
             required: true
+        },
+        idToDrop : {
+
         }
     },
     components : {
@@ -138,6 +140,10 @@ export default {
             this.hours = Math.floor(this.vel/3600)
             this.minutes = Math.floor((this.vel-(this.hours*3600))/60)
             this.seconds = (this.vel-(this.hours*3600)-(this.minutes*60))
+        },
+        leftPadding(num){
+            if(num>9)return num
+            return '0'+num
         }
     },
     async created(){
@@ -186,7 +192,13 @@ export default {
         //         this.minutes = 0
         //     }
            
-        // }
+        // },
+        idToDrop(newVal){
+            if(newVal===this.t.id){
+                this.changeStatus()
+                this.$emit('nullifyIdToDrop')
+            }
+        }
     }
 };
 </script>
