@@ -142,7 +142,7 @@
 import { db } from '@/firebaseConfig';
 import { useTaskStore } from '@/store/taskStore';
 import { addDoc, collection } from 'firebase/firestore';
-import { mapActions } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 
 export default {
     data() {
@@ -154,6 +154,9 @@ export default {
         dev : '',
       };
     },
+    computed:{
+        ...mapState(useTaskStore,['loggedUser'])
+    },
     methods: {
       ...mapActions(useTaskStore, ['addNewTask']),
       handleSubmit(){
@@ -164,6 +167,7 @@ export default {
           return null
         }
         const newTask = {
+          uid : this.loggedUser.uid,
           title : this.title,
           desc : this.desc,
           status : 'pending',

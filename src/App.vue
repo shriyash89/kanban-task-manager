@@ -1,43 +1,30 @@
 <template>
   <v-app style="background-color: #F8F8F8;">
-    <AppNavbar />
-    <StatusWiseTasks />
+    <!-- <nav>
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </nav> -->
+    <router-view/>
   </v-app>
 </template>
 
 <script>
-import { mapActions, mapState } from 'pinia';
-import AppNavbar from './components/AppNavbar.vue';
-import { useCounterStore } from './store';
-import StatusWiseTasks from './components/StatusWiseTasks.vue';
+import { mapActions } from 'pinia';
+import { useTaskStore } from './store/taskStore';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-export default {
-  name: 'App',
-
-  components: {
-    AppNavbar,
-    StatusWiseTasks,
-  },
-
-  data: () => ({
-    
-  }),
-  computed : {
-    ...mapState(useCounterStore, ['count','double'])
-  },
-  methods : {
-    ...mapActions(useCounterStore, ['increment'])
-  },
-  created(){
-    // getDocs(collection(db,'tasks'))
-    //   .then(snapshot=>{
-    //     snapshot.forEach(doc => {
-    //         console.log("docId-> "+doc.id, doc.data())
-    //     });
-    //   })
-    //   .catch(err=>{
-    //     console.log(err)
-    //   })
-  },
-};
+  export default {
+      methods : {
+          ...mapActions(useTaskStore,['setLoggedUser'])
+      },
+      created(){
+          const auth = getAuth()
+          onAuthStateChanged(auth,user=>{
+              this.setLoggedUser(user)
+          })
+      }
+  }
 </script>
+
+<style scoped>
+</style>

@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
-import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '@/firebaseConfig';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export const useTaskStore = defineStore('tasks' ,{
-    state : () => ({ tasks : []}),
+    state : () => ({ tasks : [], loggedUser : null}),
     getters : {
         pendingTasks(){
             return this.tasks.filter(t=>t.status==='pending')
@@ -17,16 +18,25 @@ export const useTaskStore = defineStore('tasks' ,{
     },
     actions : {
         fetchTasks(){
-            getDocs(collection(db,'tasks'))
-                .then(snapshot=>{
-                    this.tasks = []
-                    snapshot.forEach(task=>{
-                    this.tasks.push({id:task.id,...task.data()})
-                    })
-                })
-                .catch(err=>{
-                    console.log(err)
-                })
+            const auth = getAuth()
+            // console.log("auth",auth)
+            onAuthStateChanged(auth,user=>{
+                if(user){
+                    const qr = query(collection(db,"tasks"), where("uid","==",user.uid))
+                    
+                    getDocs(qr)
+                        .then(snapshot=>{
+                            this.tasks = []
+                            snapshot.forEach(task=>{
+                                this.tasks.push({id:task.id,...task.data()})
+                            })
+                        })
+                        .catch(err=>{
+                            console.log(err)
+                        })
+                }
+            })
+            
         },
         addNewTask(newTask){
             this.tasks.push(newTask)
@@ -64,6 +74,10 @@ export const useTaskStore = defineStore('tasks' ,{
                 if(this.tasks[i].id===id)
                     this.tasks[i].subTasks = subtask
             } 
+        },
+        setLoggedUser(user){
+            // console.log("setLoggedUser",user.uid)
+            this.loggedUser = user
         }
     }
 })

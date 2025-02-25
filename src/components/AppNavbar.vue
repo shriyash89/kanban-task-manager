@@ -27,6 +27,10 @@
         <v-btn icon>
           <v-icon>mdi-filter</v-icon>
         </v-btn>
+
+        <v-btn @click="handleLogout" small rounded color="blue-grey lighten-3">
+          logout
+        </v-btn>
   
         <v-btn icon>
           <v-icon>mdi-dots-vertical</v-icon>
@@ -38,7 +42,10 @@
 </template>
   
 <script>
+import { getAuth, signOut } from 'firebase/auth';
 import AddTask from './AddTask.vue';
+import { mapActions } from 'pinia';
+import { useTaskStore } from '@/store/taskStore';
 
   
   export default {
@@ -55,7 +62,12 @@ import AddTask from './AddTask.vue';
 
     },
     methods : {
-
+      ...mapActions(useTaskStore,['setLoggedUser']),
+      handleLogout(){
+        const auth = getAuth()
+        this.setLoggedUser(null)
+        signOut(auth)
+      }
     },
   }
 </script>

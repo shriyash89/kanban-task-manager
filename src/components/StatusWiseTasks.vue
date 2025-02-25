@@ -116,7 +116,6 @@ export default {
               this.idToDrop = itemID
           
           // console.log("itemid"+itemID,"statusTOChange"+statusTOChange)
-          
           // const item = this.items.find((item) => item.id == itemID)
           // console.log("idToDrop", this.idToDrop)
           // item.list = list
