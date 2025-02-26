@@ -9,6 +9,16 @@
             </v-tab>  
         </v-tabs>
 
+        <div style="height: 100%;width: 100%;">
+            <SubTaskShift 
+                v-if="showShift" 
+                @invertShow="showShift=false"
+                @shiftSubtasks="handleShift($event)"
+                :id="id"
+            />
+        </div>
+        
+
         <div v-show="!showInfo">
             <v-container style="padding: 0;margin-top: 15px;" v-show="!showUpdate">
                 <div class="mt-2">
@@ -61,6 +71,9 @@
                         <v-btn icon @click="handleDelete" style="margin-top: 12px;margin-left: 5px;">
                             <v-icon color="red">mdi-delete</v-icon>
                         </v-btn>
+                        <v-btn icon @click="showShift=true" style="margin-top: 12px;margin-left: 5px;">
+                            <v-icon>mdi-shuffle</v-icon>
+                        </v-btn>
                         <v-spacer></v-spacer>
                         <v-btn icon @click="handleCross();showUpdate=false" style="margin-top: 12px;margin-left: 5px;">
                             <v-icon color="grey light-2">mdi-close-circle-outline</v-icon>
@@ -92,6 +105,7 @@
 <script>
 import { useTaskStore } from '@/store/taskStore';
 import { mapActions } from 'pinia';
+import SubTaskShift from './SubTaskShift.vue';
 
 export default {
   props : {
@@ -105,6 +119,9 @@ export default {
         required : true
     }
   },
+  components : {
+      SubTaskShift,
+  },
   data() {
     return {
       subTask : this.subTa,
@@ -112,11 +129,12 @@ export default {
       selectedIndices : [],
       showInfo : false,
       showUpdate : false,
+      showShift : false,
       allCheck : false
     };
   },
   methods: {
-    ...mapActions(useTaskStore,['updateSubTasks']),
+    ...mapActions(useTaskStore,['updateSubTasks', 'getTask']),
     handleNewSubtask(){
         this.newSubtask = this.newSubtask.trim()
         if(this.newSubtask){
@@ -148,6 +166,14 @@ export default {
         this.subTask = this.subTask.filter(t=>t.check===false)
         this.updateSubTasks(this.id, this.subTask)
         this.showUpdate = false
+    },
+    handleShift(shiftId){
+        let toSubtask = this.getTask(shiftId).subTasks
+        let temp = this.subTask
+        toSubtask = toSubtask.concat(temp.filter(t=>t.check===true))
+        this.updateSubTasks(shiftId, toSubtask)
+        this.handleDelete()
+        this.showShift = false
     },
     hanldeAllCheck(){
         this.subTask.forEach(t => {

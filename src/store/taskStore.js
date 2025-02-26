@@ -70,10 +70,16 @@ export const useTaskStore = defineStore('tasks' ,{
         async updateSubTasks(id,subtask){
             const docToUpdate = doc(db, 'tasks', id)
             await updateDoc(docToUpdate, {"subTasks" : subtask})
-            for(let i=0;i<this.tasks;i++){
-                if(this.tasks[i].id===id)
-                    this.tasks[i].subTasks = subtask
-            } 
+            let tsk = this.tasks.find(t=>t.id===id)
+            tsk.subTasks = subtask
+            // console.log("outside loop",tsk)
+            // for(let i=0;i<this.tasks.length;i++){
+            //     console.log("id",id)
+            //     if(this.tasks[i].id===id){
+            //         this.tasks[i].subTasks = subtask
+            //         console.log("this.tasks",this.tasks)
+            //     }
+            // } 
         },
         setLoggedUser(user){
             // console.log("setLoggedUser",user.uid)

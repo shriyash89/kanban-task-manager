@@ -99,7 +99,7 @@ export default {
         };
     },
     computed :{
-      ...mapState(useTaskStore, ['pendingTasks','inProcessTasks','doneTasks'])
+      ...mapState(useTaskStore, ['tasks', 'pendingTasks','inProcessTasks','doneTasks'])
     },
     methods: {
         ...mapActions(useTaskStore, ['fetchTasks']),
@@ -126,6 +126,16 @@ export default {
     },
     created(){
         this.fetchTasks()
+    },
+    watch : {
+      // tasks : {
+      //   handler(newVal){
+      //     // console.log("inside the handler")
+      //     // this.fetchTasks()
+      //     console.log("newVal",newVal)
+      //   },
+      //   deep:true
+      // }
     }
 };
 </script>
